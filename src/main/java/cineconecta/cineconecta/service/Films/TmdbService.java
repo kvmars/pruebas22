@@ -78,7 +78,7 @@ public class TmdbService {
         return Optional.empty();
     }
 
-    // Este método ahora llama a la API C++
+    // Este metodo ahora llama a la API C++
     public Optional<TmdbMovieDto> getMovieDetails(Long tmdbId) {
         Optional<MovieSearchResult> movieDetails = cppMovieApiClient.getMovieDetailsInCpp(tmdbId);
 
