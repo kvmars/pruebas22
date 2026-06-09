@@ -1,6 +1,6 @@
 package cineconecta.cineconecta.controllers.Users;
 
-import cineconecta.cineconecta.controllers.Fimls.CineResponse;
+import cineconecta.cineconecta.controllers.Films.CineResponse;
 import cineconecta.cineconecta.model.Users.Cinephile;
 import cineconecta.cineconecta.service.User.UserServices;
 //import cineconecta.cineconecta.service.User.AuthServices;

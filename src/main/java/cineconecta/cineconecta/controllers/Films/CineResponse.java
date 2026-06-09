@@ -1,4 +1,4 @@
-package cineconecta.cineconecta.controllers.Fimls;
+package cineconecta.cineconecta.controllers.Films;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

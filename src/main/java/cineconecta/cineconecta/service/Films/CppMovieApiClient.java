@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper; // Para construir JSON en Java
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,25 +34,27 @@ public class CppMovieApiClient {
         String url = cppApiBaseUrl + "/api/movies/search-proxy";
 
         ObjectNode requestBody = objectMapper.createObjectNode();
-        if (query!= null &&!query.isEmpty()) {
-            requestBody.put("query", query);
-        }
-        if (genreId!= null &&!genreId.isEmpty()) {
-            requestBody.put("genreId", genreId);
-        }
-        if (year!= null) {
-            requestBody.put("year", year);
-        }
+        if (query != null && !query.isEmpty()) requestBody.put("query", query);
+        if (genreId != null && !genreId.isEmpty()) requestBody.put("genreId", genreId);
+        if (year != null) requestBody.put("year", year);
 
         try {
-            // C++ devuelve una lista de MovieSearchResult directamente
-            MovieSearchResult results = restTemplate.postForObject(url, requestBody, MovieSearchResult.class);
-            return Optional.ofNullable(Arrays.asList(results));
+            System.out.println("➡️ JSON enviado a C++: " + requestBody.toPrettyString());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+            String jsonBody = requestBody.toString();
+            HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+
+            MovieSearchResult[] resultsArray = restTemplate.postForObject(url, request, MovieSearchResult[].class);
+            return Optional.ofNullable(resultsArray != null ? Arrays.asList(resultsArray) : null);
         } catch (Exception e) {
-            System.err.println("Error al llamar a la API C++ para búsqueda de películas: " + e.getMessage());
+            System.err.println("❌ Error llamando al C++: " + e.getMessage());
             return Optional.empty();
         }
     }
+
 
     public Optional<MovieSearchResult> getMovieDetailsInCpp(Long tmdbId) {
         String url = UriComponentsBuilder.fromUriString(cppApiBaseUrl + "/api/movies/{tmdbId}/details-proxy")
